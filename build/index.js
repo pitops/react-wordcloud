@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -13,39 +13,39 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                                                                                                                                                                                                                                                                    * 
                                                                                                                                                                                                                                                                    */
 
-var _react = require('react');
+var _react = require("react");
 
 var React = _interopRequireWildcard(_react);
 
-var _d3Array = require('d3-array');
+var _d3Array = require("d3-array");
 
 var d3Array = _interopRequireWildcard(_d3Array);
 
-var _d3Cloud = require('d3-cloud');
+var _d3Cloud = require("d3-cloud");
 
 var _d3Cloud2 = _interopRequireDefault(_d3Cloud);
 
-var _d3Scale = require('d3-scale');
+var _d3Scale = require("d3-scale");
 
 var d3Scale = _interopRequireWildcard(_d3Scale);
 
-var _d3Selection = require('d3-selection');
+var _d3Selection = require("d3-selection");
 
 var d3Selection = _interopRequireWildcard(_d3Selection);
 
-var _d3SelectionMulti = require('d3-selection-multi');
+var _d3SelectionMulti = require("d3-selection-multi");
 
 var d3SelectionMulti = _interopRequireWildcard(_d3SelectionMulti);
 
-var _invariant = require('invariant');
+var _invariant = require("invariant");
 
 var _invariant2 = _interopRequireDefault(_invariant);
 
-var _lodash = require('lodash.uniqby');
+var _lodash = require("lodash.uniqby");
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _tooltip = require('./tooltip');
+var _tooltip = require("./tooltip");
 
 var _tooltip2 = _interopRequireDefault(_tooltip);
 
@@ -81,7 +81,7 @@ var WordCloud = function (_React$Component) {
     }
 
     return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = WordCloud.__proto__ || Object.getPrototypeOf(WordCloud)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
-      tooltipContent: '',
+      tooltipContent: "",
       tooltipEnabled: false,
       tooltipX: 0,
       tooltipY: 0
@@ -100,13 +100,13 @@ var WordCloud = function (_React$Component) {
           wordCountKey = _this$props2.wordCountKey,
           onSetTooltip = _this$props2.onSetTooltip;
 
-      var tooltipContent = onSetTooltip ? onSetTooltip(d) : d[wordKey] + ' (' + d[wordCountKey] + ')';
+      var tooltipContent = onSetTooltip ? onSetTooltip(d) : d[wordKey] + " (" + d[wordCountKey] + ")";
       if (tooltipEnabled) {
         _this.setState({
           tooltipContent: tooltipContent,
           tooltipEnabled: true,
-          tooltipX: _d3Selection.event.pageX,
-          tooltipY: _d3Selection.event.pageY - 28
+          tooltipX: _d3Selection.event.clientX,
+          tooltipY: _d3Selection.event.clientY
         });
       }
     }, _this._onMouseOut = function (d) {
@@ -119,18 +119,18 @@ var WordCloud = function (_React$Component) {
   }
 
   _createClass(WordCloud, [{
-    key: 'componentDidMount',
+    key: "componentDidMount",
     value: function componentDidMount() {
       this._validateProps();
       this._init(this.props);
     }
   }, {
-    key: 'componentWillReceiveProps',
+    key: "componentWillReceiveProps",
     value: function componentWillReceiveProps(nextProps) {
       this._update(nextProps);
     }
   }, {
-    key: 'render',
+    key: "render",
     value: function render() {
       var _this2 = this;
 
@@ -147,12 +147,13 @@ var WordCloud = function (_React$Component) {
         y: tooltipY
       }) : null;
       return React.createElement(
-        'div',
+        "div",
         {
           ref: function ref(container) {
             _this2._container = container;
-          } },
-        React.createElement('div', {
+          }
+        },
+        React.createElement("div", {
           ref: function ref(chart) {
             _this2._chart = chart;
           }
@@ -164,7 +165,7 @@ var WordCloud = function (_React$Component) {
     // read w/h from props, then from parent container, then from min values
 
   }, {
-    key: '_setDimensions',
+    key: "_setDimensions",
     value: function _setDimensions(height, width) {
       var _container$parentNode = this._container.parentNode,
           parentHeight = _container$parentNode.offsetHeight,
@@ -172,33 +173,33 @@ var WordCloud = function (_React$Component) {
 
       this._height = height || parentHeight;
       this._width = width || parentWidth;
-      if (typeof this._height !== 'number' || this._height < MIN_HEIGHT) {
-        console.warn('Invalid/small height provided, falling back to minimum value of ' + MIN_HEIGHT);
+      if (typeof this._height !== "number" || this._height < MIN_HEIGHT) {
+        console.warn("Invalid/small height provided, falling back to minimum value of " + MIN_HEIGHT);
         this._height = MIN_HEIGHT;
       }
-      if (typeof this._width !== 'number' || this._width < MIN_WIDTH) {
-        console.warn('Invalid/small width provided, falling back to minimum value of ' + MIN_WIDTH);
+      if (typeof this._width !== "number" || this._width < MIN_WIDTH) {
+        console.warn("Invalid/small width provided, falling back to minimum value of " + MIN_WIDTH);
         this._width = MIN_WIDTH;
       }
     }
   }, {
-    key: '_init',
+    key: "_init",
     value: function _init(props) {
       // cleanup
-      d3.select(this._chart).selectAll('*').remove();
+      d3.select(this._chart).selectAll("*").remove();
 
       // create svg and vis nodes
       var height = props.height,
           width = props.width;
 
       this._setDimensions(height, width);
-      this._svg = d3.select(this._chart).append('svg');
-      this._vis = this._svg.append('g');
+      this._svg = d3.select(this._chart).append("svg");
+      this._vis = this._svg.append("g");
       this._layout = (0, _d3Cloud2.default)();
       this._update(props);
     }
   }, {
-    key: '_update',
+    key: "_update",
     value: function _update(props) {
       var _this3 = this;
 
@@ -220,7 +221,7 @@ var WordCloud = function (_React$Component) {
         height: this._height,
         width: this._width
       });
-      this._vis.attr('transform', 'translate(' + this._width / 2 + ', ' + this._height / 2 + ')');
+      this._vis.attr("transform", "translate(" + this._width / 2 + ", " + this._height / 2 + ")");
 
       // update fontScale by rescaling to min/max values of data
       // if min === max, we prefer the upper bound range value
@@ -236,7 +237,7 @@ var WordCloud = function (_React$Component) {
       }
 
       // compute rotations based on orientations and angles
-      if (typeof orientations === 'number' && orientations > 0) {
+      if (typeof orientations === "number" && orientations > 0) {
         var rotations = [];
         if (orientations === 1) {
           rotations = [minAngle];
@@ -256,30 +257,30 @@ var WordCloud = function (_React$Component) {
 
       this._layout.size([this._width, this._height]).words(filteredWords).padding(1).text(this._setText).font(fontFamily).fontSize(function (d) {
         return _this3._fontScale(d[wordCountKey]);
-      }).spiral(spiral).on('end', function (words) {
+      }).spiral(spiral).on("end", function (words) {
         return _this3._draw(words, props);
       }).start();
     }
   }, {
-    key: '_draw',
+    key: "_draw",
     value: function _draw(words, props) {
       // d3.layout.cloud adds 'x', 'y', 'rotate', 'size' accessors to 'd' object
       var fontFamily = props.fontFamily,
           transitionDuration = props.transitionDuration,
           onWordClick = props.onWordClick;
 
-      this._words = this._vis.selectAll('text').data(words);
+      this._words = this._vis.selectAll("text").data(words);
 
       // enter transition
-      this._words.enter().append('text').on('click', onWordClick).on('mouseover', this._onMouseOver).on('mouseout', this._onMouseOut).attrs({
-        cursor: onWordClick ? 'pointer' : 'default',
+      this._words.enter().append("text").on("click", onWordClick).on("mouseover", this._onMouseOver).on("mouseout", this._onMouseOut).attrs({
+        cursor: onWordClick ? "pointer" : "default",
         fill: this._colorScale,
-        'font-family': fontFamily,
-        'text-anchor': 'middle',
-        transform: 'translate(0, 0) rotate(0)'
+        "font-family": fontFamily,
+        "text-anchor": "middle",
+        transform: "translate(0, 0) rotate(0)"
       }).transition().duration(transitionDuration).attrs({
-        'font-size': function fontSize(d) {
-          return d.size + 'px';
+        "font-size": function fontSize(d) {
+          return d.size + "px";
         },
         transform: this._transformText
       }).text(this._setText);
@@ -287,25 +288,25 @@ var WordCloud = function (_React$Component) {
       // update transition
       this._words.transition().duration(transitionDuration).attrs({
         fill: this._colorScale,
-        'font-family': fontFamily,
-        'font-size': function fontSize(d) {
-          return d.size + 'px';
+        "font-family": fontFamily,
+        "font-size": function fontSize(d) {
+          return d.size + "px";
         },
         transform: this._transformText
       }).text(this._setText);
 
       // exit transition
-      this._words.exit().transition().duration(transitionDuration).attr('fill-opacity', 0).remove();
+      this._words.exit().transition().duration(transitionDuration).attr("fill-opacity", 0).remove();
     }
   }, {
-    key: '_transformText',
+    key: "_transformText",
     value: function _transformText(d) {
-      var translate = 'translate(' + d.x + ', ' + d.y + ')';
-      var rotate = typeof d.rotate === 'number' ? 'rotate(' + d.rotate + ')' : '';
+      var translate = "translate(" + d.x + ", " + d.y + ")";
+      var rotate = typeof d.rotate === "number" ? "rotate(" + d.rotate + ")" : "";
       return translate + rotate;
     }
   }, {
-    key: '_validateProps',
+    key: "_validateProps",
     value: function _validateProps() {
       var _props = this.props,
           maxAngle = _props.maxAngle,
@@ -314,12 +315,12 @@ var WordCloud = function (_React$Component) {
           wordCountKey = _props.wordCountKey,
           wordKey = _props.wordKey;
 
-      (0, _invariant2.default)(Math.abs(minAngle) <= 90 && Math.abs(maxAngle) <= 90, 'Angles must have values between -90 to 90 degrees');
-      (0, _invariant2.default)(minAngle <= maxAngle, 'minAngle must be <= maxAngle');
+      (0, _invariant2.default)(Math.abs(minAngle) <= 90 && Math.abs(maxAngle) <= 90, "Angles must have values between -90 to 90 degrees");
+      (0, _invariant2.default)(minAngle <= maxAngle, "minAngle must be <= maxAngle");
       if (words.length > 0) {
         var firstRow = words[0];
-        (0, _invariant2.default)(wordKey in firstRow, 'Word key must be a valid key in the data');
-        (0, _invariant2.default)(wordCountKey in firstRow, 'Word count key must be a valid key in the data');
+        (0, _invariant2.default)(wordKey in firstRow, "Word key must be a valid key in the data");
+        (0, _invariant2.default)(wordCountKey in firstRow, "Word count key must be a valid key in the data");
       }
     }
   }]);
@@ -329,14 +330,14 @@ var WordCloud = function (_React$Component) {
 
 WordCloud.defaultProps = {
   colors: DEFAULT_COLORS,
-  fontFamily: 'impact',
+  fontFamily: "impact",
   height: null,
   maxAngle: 0,
   maxWords: 300,
   minAngle: 0,
   orientations: 1,
-  scale: 'sqrt',
-  spiral: 'rectangular',
+  scale: "sqrt",
+  spiral: "rectangular",
   tooltipEnabled: true,
   transitionDuration: 1000,
   width: null
@@ -351,11 +352,11 @@ var _chooseRandom = function _chooseRandom(array) {
 
 var _getScale = function _getScale(scale) {
   switch (scale) {
-    case 'linear':
+    case "linear":
       return d3.scaleLinear;
-    case 'log':
+    case "log":
       return d3.scaleLog;
-    case 'sqrt':
+    case "sqrt":
     default:
       return d3.scaleSqrt;
   }

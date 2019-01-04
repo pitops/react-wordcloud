@@ -5,23 +5,23 @@
  * @flow
  */
 
-import * as React from 'react';
-import * as d3Array from 'd3-array';
-import cloud from 'd3-cloud';
-import * as d3Scale from 'd3-scale';
-import * as d3Selection from 'd3-selection';
-import {event as currentEvent} from 'd3-selection';
-import * as d3SelectionMulti from 'd3-selection-multi';
-import invariant from 'invariant';
-import uniqBy from 'lodash.uniqby';
+import * as React from "react";
+import * as d3Array from "d3-array";
+import cloud from "d3-cloud";
+import * as d3Scale from "d3-scale";
+import * as d3Selection from "d3-selection";
+import { event as currentEvent } from "d3-selection";
+import * as d3SelectionMulti from "d3-selection-multi";
+import invariant from "invariant";
+import uniqBy from "lodash.uniqby";
 
-import Tooltip from './tooltip';
+import Tooltip from "./tooltip";
 
 const d3 = {
   ...d3Array,
   ...d3Scale,
   ...d3Selection,
-  ...d3SelectionMulti,
+  ...d3SelectionMulti
 };
 
 // min values are required because the layout will take too long to compute
@@ -29,8 +29,8 @@ const d3 = {
 const MIN_HEIGHT = 150;
 const MIN_WIDTH = 200;
 
-type TScale = 'sqrt' | 'log' | 'linear';
-type TSpiral = 'archimedean' | 'rectangular';
+type TScale = "sqrt" | "log" | "linear";
+type TSpiral = "archimedean" | "rectangular";
 
 type TProps = {
   /**
@@ -108,14 +108,14 @@ type TProps = {
   /**
    * Callback when word is clicked.
    */
-  onWordClick?: (d: Object) => void,
+  onWordClick?: (d: Object) => void
 };
 
 type TState = {
   tooltipContent: string,
   tooltipEnabled: boolean,
   tooltipX: number,
-  tooltipY: number,
+  tooltipY: number
 };
 
 class WordCloud extends React.Component<TProps, TState> {
@@ -131,24 +131,24 @@ class WordCloud extends React.Component<TProps, TState> {
 
   static defaultProps = {
     colors: DEFAULT_COLORS,
-    fontFamily: 'impact',
+    fontFamily: "impact",
     height: null,
     maxAngle: 0,
     maxWords: 300,
     minAngle: 0,
     orientations: 1,
-    scale: 'sqrt',
-    spiral: 'rectangular',
+    scale: "sqrt",
+    spiral: "rectangular",
     tooltipEnabled: true,
     transitionDuration: 1000,
-    width: null,
+    width: null
   };
 
   state = {
-    tooltipContent: '',
+    tooltipContent: "",
     tooltipEnabled: false,
     tooltipX: 0,
-    tooltipY: 0,
+    tooltipY: 0
   };
 
   componentDidMount(): void {
@@ -161,7 +161,7 @@ class WordCloud extends React.Component<TProps, TState> {
   }
 
   render(): React.Element<any> {
-    const {tooltipContent, tooltipEnabled, tooltipX, tooltipY} = this.state;
+    const { tooltipContent, tooltipEnabled, tooltipX, tooltipY } = this.state;
     const tooltip = tooltipEnabled ? (
       <Tooltip
         content={tooltipContent}
@@ -174,7 +174,8 @@ class WordCloud extends React.Component<TProps, TState> {
       <div
         ref={(container): void => {
           this._container = container;
-        }}>
+        }}
+      >
         <div
           ref={(chart): void => {
             this._chart = chart;
@@ -189,19 +190,19 @@ class WordCloud extends React.Component<TProps, TState> {
   _setDimensions(height: ?number, width: ?number): void {
     const {
       offsetHeight: parentHeight,
-      offsetWidth: parentWidth,
+      offsetWidth: parentWidth
     } = this._container.parentNode;
     this._height = height || parentHeight;
     this._width = width || parentWidth;
-    if (typeof this._height !== 'number' || this._height < MIN_HEIGHT) {
+    if (typeof this._height !== "number" || this._height < MIN_HEIGHT) {
       console.warn(
-        `Invalid/small height provided, falling back to minimum value of ${MIN_HEIGHT}`,
+        `Invalid/small height provided, falling back to minimum value of ${MIN_HEIGHT}`
       );
       this._height = MIN_HEIGHT;
     }
-    if (typeof this._width !== 'number' || this._width < MIN_WIDTH) {
+    if (typeof this._width !== "number" || this._width < MIN_WIDTH) {
       console.warn(
-        `Invalid/small width provided, falling back to minimum value of ${MIN_WIDTH}`,
+        `Invalid/small width provided, falling back to minimum value of ${MIN_WIDTH}`
       );
       this._width = MIN_WIDTH;
     }
@@ -211,14 +212,14 @@ class WordCloud extends React.Component<TProps, TState> {
     // cleanup
     d3
       .select(this._chart)
-      .selectAll('*')
+      .selectAll("*")
       .remove();
 
     // create svg and vis nodes
-    const {height, width} = props;
+    const { height, width } = props;
     this._setDimensions(height, width);
-    this._svg = d3.select(this._chart).append('svg');
-    this._vis = this._svg.append('g');
+    this._svg = d3.select(this._chart).append("svg");
+    this._vis = this._svg.append("g");
     this._layout = cloud();
     this._update(props);
   }
@@ -235,18 +236,17 @@ class WordCloud extends React.Component<TProps, TState> {
       spiral,
       width,
       wordCountKey,
-      words,
+      words
     } = props;
     // update svg/vis nodes dimensions
     this._setDimensions(height, width);
-    this._svg
-      .attrs({
-        height: this._height,
-        width: this._width,
-      });
+    this._svg.attrs({
+      height: this._height,
+      width: this._width
+    });
     this._vis.attr(
-      'transform',
-      `translate(${this._width / 2}, ${this._height / 2})`,
+      "transform",
+      `translate(${this._width / 2}, ${this._height / 2})`
     );
 
     // update fontScale by rescaling to min/max values of data
@@ -260,12 +260,12 @@ class WordCloud extends React.Component<TProps, TState> {
     if (filteredWords.length) {
       this._fontScale.domain([
         d3.min(filteredWords, (d: Object): number => d[wordCountKey]),
-        d3.max(filteredWords, (d: Object): number => d[wordCountKey]),
+        d3.max(filteredWords, (d: Object): number => d[wordCountKey])
       ]);
     }
 
     // compute rotations based on orientations and angles
-    if (typeof orientations === 'number' && orientations > 0) {
+    if (typeof orientations === "number" && orientations > 0) {
       let rotations = [];
       if (orientations === 1) {
         rotations = [minAngle];
@@ -289,34 +289,34 @@ class WordCloud extends React.Component<TProps, TState> {
       .font(fontFamily)
       .fontSize((d: Object): number => this._fontScale(d[wordCountKey]))
       .spiral(spiral)
-      .on('end', (words: Array<Object>): void => this._draw(words, props))
+      .on("end", (words: Array<Object>): void => this._draw(words, props))
       .start();
   }
 
   _draw(words: Array<Object>, props: TProps): void {
     // d3.layout.cloud adds 'x', 'y', 'rotate', 'size' accessors to 'd' object
-    const {fontFamily, transitionDuration, onWordClick} = props;
-    this._words = this._vis.selectAll('text').data(words);
+    const { fontFamily, transitionDuration, onWordClick } = props;
+    this._words = this._vis.selectAll("text").data(words);
 
     // enter transition
     this._words
       .enter()
-      .append('text')
-      .on('click', onWordClick)
-      .on('mouseover', this._onMouseOver)
-      .on('mouseout', this._onMouseOut)
+      .append("text")
+      .on("click", onWordClick)
+      .on("mouseover", this._onMouseOver)
+      .on("mouseout", this._onMouseOut)
       .attrs({
-        cursor: onWordClick ? 'pointer' : 'default',
+        cursor: onWordClick ? "pointer" : "default",
         fill: this._colorScale,
-        'font-family': fontFamily,
-        'text-anchor': 'middle',
-        transform: 'translate(0, 0) rotate(0)',
+        "font-family": fontFamily,
+        "text-anchor": "middle",
+        transform: "translate(0, 0) rotate(0)"
       })
       .transition()
       .duration(transitionDuration)
       .attrs({
-        'font-size': (d: Object): string => `${d.size}px`,
-        transform: this._transformText,
+        "font-size": (d: Object): string => `${d.size}px`,
+        transform: this._transformText
       })
       .text(this._setText);
 
@@ -326,9 +326,9 @@ class WordCloud extends React.Component<TProps, TState> {
       .duration(transitionDuration)
       .attrs({
         fill: this._colorScale,
-        'font-family': fontFamily,
-        'font-size': (d: Object): string => `${d.size}px`,
-        transform: this._transformText,
+        "font-family": fontFamily,
+        "font-size": (d: Object): string => `${d.size}px`,
+        transform: this._transformText
       })
       .text(this._setText);
 
@@ -337,13 +337,13 @@ class WordCloud extends React.Component<TProps, TState> {
       .exit()
       .transition()
       .duration(transitionDuration)
-      .attr('fill-opacity', 0)
+      .attr("fill-opacity", 0)
       .remove();
   }
 
   _transformText(d: Object): string {
     const translate = `translate(${d.x}, ${d.y})`;
-    const rotate = typeof d.rotate === 'number' ? `rotate(${d.rotate})` : '';
+    const rotate = typeof d.rotate === "number" ? `rotate(${d.rotate})` : "";
     return translate + rotate;
   }
 
@@ -352,14 +352,14 @@ class WordCloud extends React.Component<TProps, TState> {
   };
 
   _colorScale = (d: Object, i: number): string => {
-    const {colorScale, colors} = this.props;
+    const { colorScale, colors } = this.props;
     return colorScale
       ? colorScale(d, i)
       : _chooseRandom(colors || DEFAULT_COLORS);
   };
 
   _onMouseOver = (d: Object): void => {
-    const {tooltipEnabled, wordKey, wordCountKey, onSetTooltip} = this.props;
+    const { tooltipEnabled, wordKey, wordCountKey, onSetTooltip } = this.props;
     const tooltipContent = onSetTooltip
       ? onSetTooltip(d)
       : `${d[wordKey]} (${d[wordCountKey]})`;
@@ -367,8 +367,8 @@ class WordCloud extends React.Component<TProps, TState> {
       this.setState({
         tooltipContent,
         tooltipEnabled: true,
-        tooltipX: currentEvent.pageX,
-        tooltipY: currentEvent.pageY - 28,
+        tooltipX: currentEvent.clientX,
+        tooltipY: currentEvent.clientY
       });
     }
   };
@@ -376,27 +376,27 @@ class WordCloud extends React.Component<TProps, TState> {
   _onMouseOut = (d: Object): void => {
     if (this.props.tooltipEnabled) {
       this.setState({
-        tooltipEnabled: false,
+        tooltipEnabled: false
       });
     }
   };
 
   _validateProps(): void {
-    const {maxAngle, minAngle, words, wordCountKey, wordKey} = this.props;
+    const { maxAngle, minAngle, words, wordCountKey, wordKey } = this.props;
     invariant(
       Math.abs(minAngle) <= 90 && Math.abs(maxAngle) <= 90,
-      'Angles must have values between -90 to 90 degrees',
+      "Angles must have values between -90 to 90 degrees"
     );
-    invariant(minAngle <= maxAngle, 'minAngle must be <= maxAngle');
+    invariant(minAngle <= maxAngle, "minAngle must be <= maxAngle");
     if (words.length > 0) {
       const firstRow = words[0];
       invariant(
         wordKey in firstRow,
-        'Word key must be a valid key in the data',
+        "Word key must be a valid key in the data"
       );
       invariant(
         wordCountKey in firstRow,
-        'Word count key must be a valid key in the data',
+        "Word count key must be a valid key in the data"
       );
     }
   }
@@ -412,11 +412,11 @@ const _chooseRandom = (array: Array<any>): any => {
 
 const _getScale = (scale: TScale): Function => {
   switch (scale) {
-    case 'linear':
+    case "linear":
       return d3.scaleLinear;
-    case 'log':
+    case "log":
       return d3.scaleLog;
-    case 'sqrt':
+    case "sqrt":
     default:
       return d3.scaleSqrt;
   }
